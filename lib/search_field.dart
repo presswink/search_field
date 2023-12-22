@@ -1,8 +1,2 @@
-
-import 'search_field_platform_interface.dart';
-
-class SearchField {
-  Future<String?> getPlatformVersion() {
-    return SearchFieldPlatform.instance.getPlatformVersion();
-  }
-}
+export 'src/search_field.dart';
+export 'src/search_field_data_model.dart';
