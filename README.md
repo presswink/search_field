@@ -24,7 +24,7 @@ flutter pub get
 
 1) simple Example
 
-```flutter
+```dart
 import 'package:search_field/search_field.dart';
 /// global variable
 final _firstController = SearchFieldController();
