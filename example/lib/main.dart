@@ -28,8 +28,7 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SearchField(items: [SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are"), SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are")],),
-              SearchField(items: [SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are"), SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are")],)
+              SearchField(filterItems: [SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are"), SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are")],)
             ],
           ),
         ),

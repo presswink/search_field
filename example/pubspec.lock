@@ -235,6 +235,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
+  touch_ripple_effect:
+    dependency: transitive
+    description:
+      name: touch_ripple_effect
+      sha256: "4c3603f0b9ef8e0b04471e0c5eb31e627c844e6988eda848d7861f5d7ace88b8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   vector_math:
     dependency: transitive
     description:

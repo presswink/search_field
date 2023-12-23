@@ -1,7 +1,7 @@
 name: search_field
 description: "a dependency search field plugins / liblary for flutter"
 version: 0.0.1
-homepage:
+homepage: https://github.com/presswink/search_field
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -13,6 +13,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
+  touch_ripple_effect: ^2.3.0
 
 dev_dependencies:
   flutter_test:
