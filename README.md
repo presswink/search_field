@@ -32,9 +32,9 @@ final _firstController = SearchFieldController();
 TextSearchField(
   controller: _firstController,
   filterItems: [
-    SearchFieldDataModel(key: "hey", value: "hello"),
-    SearchFieldDataModel(key: "hey_1", value: "bro"),
-    SearchFieldDataModel(key: "hey_2", value: "how are you"),
+    TextSearchFieldDataModel(key: "hey", value: "hello"),
+    TextSearchFieldDataModel(key: "hey_1", value: "bro"),
+    TextSearchFieldDataModel(key: "hey_2", value: "how are you"),
   ],
   onSelected: (primarySelected, index, item) async {
     print("primary item selected: $primarySelected");
