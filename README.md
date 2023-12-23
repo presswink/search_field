@@ -1,15 +1,55 @@
 # search_field
 
-a dependency search field plugins / liblary for flutter
+a dependency search field plugins / library for flutter
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+1) add below line in your `pubspec.yaml`
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+```cmd
+search_field: ^0.0.1
+```
+
+2) call below given command
+
+
+```cmd
+flutter pub get
+
+```
+
+
+## Example
+
+1) simple Example
+
+```flutter
+import 'package:search_field/search_field.dart';
+/// global variable
+final _firstController = SearchFieldController();
+
+SearchField(
+  controller: _firstController,
+  filterItems: [
+    SearchFieldDataModel(key: "hey", value: "hello"),
+    SearchFieldDataModel(key: "hey_1", value: "bro"),
+    SearchFieldDataModel(key: "hey_2", value: "how are you"),
+  ],
+  onSelected: (primarySelected, index, item) async {
+    print("primary item selected: $primarySelected");
+    print("selected item index: $index");
+    print("item key: ${item.key}, value: ${item.value}");
+    },
+)
+
+```
+## demo
+<img src="./screenshots/sc_1.gif" width="360" height="756" alt="SearchField screenshot">
+
+
+## contributor
+
+[@Aditya panther](https://github.com/Adityapanther/)
+
 

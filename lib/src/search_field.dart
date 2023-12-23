@@ -3,29 +3,39 @@ import 'package:search_field/src/Utils.dart';
 import 'package:search_field/src/search_field_controller.dart';
 import 'package:search_field/src/search_field_data_model.dart';
 import 'package:touch_ripple_effect/touch_ripple_effect.dart';
+import 'global_key.dart';
 
-extension GlobalKeyExtension on GlobalKey {
-  Rect? get globalPaintBounds {
-    final renderObject = currentContext?.findRenderObject();
-    final translation = renderObject?.getTransformTo(null).getTranslation();
-    if (translation != null && renderObject?.paintBounds != null) {
-      final offset = Offset(translation.x, translation.y);
-      return renderObject!.paintBounds.shift(offset);
-    } else {
-      return null;
-    }
-  }
-}
 
+/// this is a search for searching or filtering item from list, server or network
+/// [hint] is a string to show hint to user in searchField,
+/// using [inputBorder] you can change your searchField broder colors and style,
+/// with [searchFieldTextStyle] you can change input text style of searchField,
+/// and with [searchFieldHintTextStyle] you will be able to change hint text style,
+/// if you want to add default or initial value to searchField you will able to do it with [initialValue],
+/// you can add predefine list for filter in the search field using [filterItems],
+/// if you want to enable [fullTextSearch] on default filter you can do it by enable this,
+/// if you want to change keyboard input type or submit button then you will be able to do it by [textInputAction],
+/// if you want to handle filter or search from the server then you will be able to do it using [fetch],
+/// with [query] you can added custom filter code on predefined list,
+/// you can change suggestion item touch ripple colors with [rippleColor],
+/// whenever user will press submit button or they will touch suggestion item then [onSelected] method is going to trigger
+/// with [controller] you will be able to add dependency and able to handle searchField widget
+/// with [dependency] you can declare dependency on other searchField
+/// if searchFiled has dependency on other searchFiled then after fetching initial searchFiled this [dependencyFetch] method is going to trigger
+/// you can change text style with [suggestionTextStyle]
+/// you you want to style your suggestion item you can do with [suggestionItemDecoration]
+/// you can define height of suggestion item with [suggestionItemContainerHeight]
+/// you can add alignment of text with [suggestionTextAlignment]
+/// with [suggestionContainerHeight] you can define suggestion height
+///
+///
 class SearchField extends StatefulWidget {
-  final InputDecoration? inputDecoration;
   final String? hint;
   final InputBorder? inputBorder;
-  final TextStyle? hintTextStyle;
-  final TextDirection? textDirection;
+  final TextStyle? searchFieldTextStyle;
+  final TextStyle? searchFieldHintTextStyle;
   final SearchFieldDataModel? initialValue;
   final List<SearchFieldDataModel>? filterItems;
-  final Color? borderColor;
   final bool fullTextSearch;
   final TextInputAction? textInputAction;
   final Future<List<SearchFieldDataModel>?> Function(String query)? fetch;
@@ -34,8 +44,25 @@ class SearchField extends StatefulWidget {
   final Future<void> Function(bool isPrimary, int index, SearchFieldDataModel selectedItem)? onSelected;
   final SearchFieldController? controller;
   final SearchFieldController? dependency;
+  final Future<List<SearchFieldDataModel>> Function(SearchFieldDataModel modelItem)? dependencyFetch;
+  final TextStyle? suggestionTextStyle;
+  final BoxDecoration? suggestionItemDecoration;
+  final double suggestionItemContainerHeight;
+  final Alignment? suggestionTextAlignment;
+  final double suggestionContainerHeight;
   // constructor
-  const SearchField({super.key, this.inputDecoration, this.hint, this.inputBorder, this.hintTextStyle, this.textDirection, this.initialValue, this.filterItems, this.borderColor, this.fetch, this.query, this.fullTextSearch = false, this.rippleColor, this.onSelected, this.controller, this.dependency, this.textInputAction});
+  const SearchField({
+    super.key, this.hint, this.inputBorder, this.searchFieldHintTextStyle,
+    this.initialValue, this.filterItems, this.fetch, this.query, this.fullTextSearch = false,
+    this.rippleColor, this.onSelected, this.controller, this.dependency, this.textInputAction,
+    this.dependencyFetch,
+    this.searchFieldTextStyle,
+    this.suggestionTextStyle,
+    this.suggestionItemDecoration,
+    this.suggestionItemContainerHeight = 50,
+    this.suggestionTextAlignment,
+    this.suggestionContainerHeight = 250,
+  });
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -46,6 +73,7 @@ class _SearchFieldState extends State<SearchField> {
   bool isLoading = false;
   List<SearchFieldDataModel>? items;
   SearchFieldDataModel? currentValue;
+  bool isSelected = false;
 
   final OverlayPortalController _overlayPortalController = OverlayPortalController();
   final _controller = TextEditingController();
@@ -55,11 +83,13 @@ class _SearchFieldState extends State<SearchField> {
   @override
   void initState() {
     _focusNode = FocusNode();
+    // setting up initial value if there any
     if(widget.initialValue != null){
       setCurrentValue(widget.initialValue!);
     }
-    super.initState();
+
     _focusNode.addListener(() {
+      // showing and hiding search suggestion list
       if(_focusNode.hasFocus){
         _overlayPortalController.show();
       }else {
@@ -67,11 +97,32 @@ class _SearchFieldState extends State<SearchField> {
       }
     });
     items = widget.filterItems;
+    if(widget.dependency != null){
+      widget.dependency!.selected = (SearchFieldDataModel item) async {
+        // enabling loader and search field
+        setState(() {
+          isLoading = true;
+          isSelected = true;
+        });
+        // calling dependency fetch method
+        items =  await widget.dependencyFetch!(item);
+        // disabling loader after content fetch
+        setState(() {
+          isLoading = false;
+        });
+      };
+    }
+    super.initState();
   }
 
   void setCurrentValue(SearchFieldDataModel value){
     currentValue = value;
     _controller.text = value.value!;
+    if(widget.controller != null){
+      if(widget.controller!.selected != null){
+        widget.controller!.selected!(value);
+      }
+    }
   }
 
   @override
@@ -83,10 +134,11 @@ class _SearchFieldState extends State<SearchField> {
         left: _globalKey.globalPaintBounds!.left,
         child: Container(
           alignment: Alignment.center,
-          height: 250,
+          height: widget.suggestionContainerHeight,
           decoration: const BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 15, offset: Offset(2, 3))]),
           child: isLoading ? const CircularProgressIndicator():  ListView.builder(
               itemCount: items != null ? items!.length : 0,
+              scrollDirection: Axis.vertical,
               itemBuilder: (BuildContext context, int index) {
                 return TouchRippleEffect(
                   rippleColor: widget.rippleColor ?? Colors.grey,
@@ -98,10 +150,11 @@ class _SearchFieldState extends State<SearchField> {
                     }
                   },
                   child: Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.rectangle, border: Border(bottom: BorderSide(color: Colors.grey, width: 0.5))),
-                    child: Text(items![index].value!, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18),),
+                    key: Key(items![index].key!),
+                    alignment:widget.suggestionTextAlignment ?? Alignment.center,
+                    height: widget.suggestionItemContainerHeight,
+                    decoration: widget.suggestionItemDecoration ?? const BoxDecoration(color: Colors.white, shape: BoxShape.rectangle, border: Border(bottom: BorderSide(color: Colors.grey, width: 0.5))),
+                    child: Text(items![index].value!, style: widget.suggestionTextStyle ?? const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 18), textDirection: TextDirection.ltr,),
                   ),
                 );
               }),
@@ -111,7 +164,8 @@ class _SearchFieldState extends State<SearchField> {
       child: TextField(
         key: _globalKey,
         controller: _controller,
-        style: const TextStyle(color: Colors.black,fontSize: 18, fontWeight: FontWeight.w400),
+        enabled: widget.dependency == null ? true : isSelected,
+        style: widget.searchFieldTextStyle ?? const TextStyle(color: Colors.black,fontSize: 18, fontWeight: FontWeight.w400),
         focusNode: _focusNode,
         textInputAction: widget.textInputAction ?? TextInputAction.go,
         keyboardType: TextInputType.text,
@@ -166,12 +220,12 @@ class _SearchFieldState extends State<SearchField> {
           // this function is going to trigger on select search field
           _focusNode.requestFocus();
         },
-        decoration: widget.inputDecoration ?? InputDecoration(
-          border: widget.inputBorder ??  OutlineInputBorder(borderSide: BorderSide(color: widget.borderColor ?? Colors.black87, width: 1.0, style: BorderStyle.solid)),
+        decoration: InputDecoration(
+          border: widget.inputBorder ??  const OutlineInputBorder(borderSide: BorderSide(color: Colors.black87, width: 1.0, style: BorderStyle.solid)),
           hintText: widget.hint ?? "please type your query",
-          hintStyle: widget.hintTextStyle ?? const TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w400),
+          hintStyle: widget.searchFieldHintTextStyle ?? const TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w400),
         ),
-        textDirection: widget.textDirection ?? TextDirection.ltr,
+        textDirection: TextDirection.ltr,
       ),
     );
   }

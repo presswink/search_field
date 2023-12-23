@@ -14,6 +14,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  final _firstController = SearchFieldController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,7 +30,22 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SearchField(filterItems: [SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are"), SearchFieldDataModel(key: "hey", value: "hello"), SearchFieldDataModel(key: "hey", value: "bro"), SearchFieldDataModel(key: "hey", value: "how are")],)
+              SearchField(
+                controller: _firstController,
+                filterItems: [
+                  SearchFieldDataModel(key: "hey", value: "hello"),
+                  SearchFieldDataModel(key: "hey", value: "bro"),
+                  SearchFieldDataModel(key: "hey", value: "how are"),
+                  SearchFieldDataModel(key: "hey", value: "hello"),
+                  SearchFieldDataModel(key: "hey", value: "bro"),
+                  SearchFieldDataModel(key: "hey", value: "how are")
+                ],
+                onSelected: (primarySelected, index, item) async {
+                  print("primary item selected: $primarySelected");
+                  print("selected item index: $index");
+                  print("item key: ${item.key}, value: ${item.value}");
+                },
+              ),
             ],
           ),
         ),
