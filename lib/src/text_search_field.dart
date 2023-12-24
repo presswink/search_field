@@ -105,7 +105,9 @@ class _SearchFieldState extends State<TextSearchField> {
           isSelected = true;
         });
         // calling dependency fetch method
-        items =  await widget.dependencyFetch!(item);
+        if(widget.dependencyFetch != null){
+          items =  await widget.dependencyFetch!(item);
+        }
         // disabling loader after content fetch
         setState(() {
           isLoading = false;
