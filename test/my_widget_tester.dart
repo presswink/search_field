@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 /// this is for testing [widget]
 class MyWidgetTester extends StatelessWidget {
   final Widget widget;
@@ -17,5 +18,3 @@ class MyWidgetTester extends StatelessWidget {
     );
   }
 }
-
-
