@@ -13,7 +13,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   final _firstController = TextSearchFieldController();
 
   @override
@@ -35,10 +34,12 @@ class _MyAppState extends State<MyApp> {
                 filterItems: [
                   TextSearchFieldDataModel(key: "hey", value: "hello"),
                   TextSearchFieldDataModel(key: "hey", value: "bro"),
+                  TextSearchFieldDataModel(key: "hey", value: "HELLO"),
                   TextSearchFieldDataModel(key: "hey", value: "how are"),
                   TextSearchFieldDataModel(key: "hey", value: "hello"),
                   TextSearchFieldDataModel(key: "hey", value: "bro"),
-                  TextSearchFieldDataModel(key: "hey", value: "how are")
+                  TextSearchFieldDataModel(key: "hey", value: "how are"),
+
                 ],
                 onSelected: (primarySelected, index, item) async {
                   print("primary item selected: $primarySelected");
