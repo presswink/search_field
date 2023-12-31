@@ -169,7 +169,7 @@ class _SearchFieldState extends State<TextSearchField> {
                         setCurrentValue(items![index]);
                         if (widget.onSelected != null) {
                           widget.onSelected!(
-                              index == 0 ? true : false, index, items![index]);
+                              index == 0 && _controller.value.text.isNotEmpty ? true : false, index, items![index]);
                         }
                       },
                       child: Container(
@@ -217,7 +217,7 @@ class _SearchFieldState extends State<TextSearchField> {
               value: _controller.value.text));
           // triggering onSelected function
           if (widget.onSelected != null) {
-            widget.onSelected!(true, 0, currentValue!);
+            widget.onSelected!(_controller.value.text.isNotEmpty, 0, currentValue!);
           }
           // removing focus from search field
           _focusNode.unfocus();
