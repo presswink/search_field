@@ -14,3 +14,6 @@
 * exported Utils class
 * key should be always lowercase
 * is first item selected bug fixed
+
+## 0.0.4
+* we are sanitizing space completely

@@ -8,7 +8,7 @@ a dependency search field plugins / library for flutter
 
 
 ```cmd
-text_search_field: ^0.0.1
+text_search_field: ^0.0.4
 ```
 
 2) call below given command
@@ -24,7 +24,7 @@ flutter pub get
 
 1) simple Example
 
-```dart
+```cmd
 import 'package:search_field/search_field.dart';
 /// global variable
 final _firstController = SearchFieldController();
